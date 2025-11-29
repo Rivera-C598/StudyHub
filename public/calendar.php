@@ -63,7 +63,7 @@ if ($nextMonth > 12) {
 
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>📅 Calendar View</h2>
+        <h2>Calendar View</h2>
         <div>
             <a href="?month=<?= $prevMonth ?>&year=<?= $prevYear ?>" class="btn btn-outline-primary">
                 ← Previous

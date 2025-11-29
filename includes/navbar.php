@@ -14,18 +14,18 @@ require_once __DIR__ . '/auth.php'; // make sure auth helpers are available
             <?php if (isLoggedIn()): ?>
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="dashboard.php">📊 Dashboard</a>
+                        <a class="nav-link" href="dashboard.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="calendar.php">📅 Calendar</a>
+                        <a class="nav-link" href="calendar.php">Calendar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="templates.php">📋 Templates</a>
+                        <a class="nav-link" href="templates.php">Templates</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" 
                            data-bs-toggle="dropdown">
-                            📥 Export
+                            Export
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
                             <li><a class="dropdown-item" href="export.php?format=csv">CSV Format</a></li>

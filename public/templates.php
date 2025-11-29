@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['template'])) {
 ?>
 
 <div class="container py-4">
-    <h2 class="mb-4">📋 Resource Templates</h2>
+    <h2 class="mb-4">Resource Templates</h2>
     <p class="text-muted mb-4">Choose a template to quickly create a new resource with pre-filled structure.</p>
     
     <?php if (isset($error)): ?>

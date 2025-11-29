@@ -1,18 +1,26 @@
 /* assets/css/style.css */
 
 :root {
-    --primary-color: #0d6efd;
+    --primary-color: #4A90E2;
     --secondary-color: #6c757d;
-    --success-color: #198754;
-    --danger-color: #dc3545;
-    --warning-color: #ffc107;
-    --dark-bg: #212529;
-    --card-bg: rgba(108, 117, 125, 0.5);
+    --success-color: #2ECC71;
+    --danger-color: #E74C3C;
+    --warning-color: #F39C12;
+    --info-color: #3498DB;
+    --dark-bg: #1a1a2e;
+    --darker-bg: #16213e;
+    --card-bg: rgba(22, 33, 62, 0.8);
+    --border-color: rgba(74, 144, 226, 0.2);
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --text-muted: #808080;
 }
 
 body {
     min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--dark-bg) !important;
+    color: var(--text-primary) !important;
 }
 
 .navbar-brand {
@@ -21,23 +29,53 @@ body {
 }
 
 .card {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s;
-    background-color: rgba(108, 117, 125, 0.5) !important;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    background-color: var(--card-bg) !important;
 }
 
 .card:hover {
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(74, 144, 226, 0.3);
+    border-color: var(--primary-color);
 }
 
-.card h6 {
-    color: #fff;
+.card h6, .card h5, .card h4 {
+    color: var(--text-primary);
     margin-bottom: 0.75rem;
 }
 
+.card-body {
+    color: var(--text-primary);
+}
+
+.card-title {
+    color: var(--text-primary) !important;
+}
+
+.card-text {
+    color: var(--text-secondary) !important;
+}
+
 .table-dark {
-    --bs-table-bg: rgba(33, 37, 41, 0.5);
+    --bs-table-bg: var(--card-bg);
+    --bs-table-color: var(--text-primary);
+    --bs-table-border-color: var(--border-color);
+}
+
+.table-dark thead th {
+    background-color: var(--darker-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.table-dark tbody tr {
+    border-color: var(--border-color);
+}
+
+.table-dark tbody tr:hover {
+    background-color: rgba(74, 144, 226, 0.1);
 }
 
 .btn {
@@ -55,35 +93,39 @@ body {
 }
 
 .form-control, .form-select {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
+    background-color: var(--darker-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
 }
 
 .form-control:focus, .form-select:focus {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: var(--darker-bg);
     border-color: var(--primary-color);
-    color: #fff;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
 }
 
 .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-muted);
 }
 
 .form-label {
-    color: #fff;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
     font-weight: 500;
 }
 
 .form-select option {
-    background-color: #212529;
-    color: #fff;
+    background-color: var(--darker-bg);
+    color: var(--text-primary);
 }
 
 textarea.form-control {
     resize: vertical;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
 }
 
 .badge {
@@ -93,9 +135,45 @@ textarea.form-control {
 
 .filter-section {
     background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     padding: 1rem;
     margin-bottom: 1rem;
+}
+
+/* Stats Cards */
+.stat-card {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+    border-color: var(--primary-color);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0.5rem 0;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
 }
 
 @media (max-width: 768px) {
@@ -215,4 +293,197 @@ body.light-theme .card.bg-info {
 /* Smooth theme transition */
 body, .card, .navbar, .form-control, .form-select, .modal-content {
     transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+/* Alert Styling */
+.alert {
+    border: 1px solid;
+    color: var(--text-primary);
+}
+
+.alert-success {
+    background-color: rgba(46, 204, 113, 0.2);
+    border-color: var(--success-color);
+}
+
+.alert-danger {
+    background-color: rgba(231, 76, 60, 0.2);
+    border-color: var(--danger-color);
+}
+
+.alert-info {
+    background-color: rgba(52, 152, 219, 0.2);
+    border-color: var(--info-color);
+}
+
+/* Modal Styling */
+.modal-content {
+    background-color: var(--darker-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+.modal-footer {
+    border-top-color: var(--border-color);
+}
+
+/* Navbar Enhancements */
+.navbar-dark {
+    background-color: var(--darker-bg) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.navbar-brand {
+    color: var(--primary-color) !important;
+    font-weight: 600;
+}
+
+.nav-link {
+    color: var(--text-secondary) !important;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Button Enhancements */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #3a7bc8;
+    border-color: #3a7bc8;
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+    color: var(--dark-bg);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-outline-success {
+    color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-outline-success:hover {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-outline-danger {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* Dropdown Menu */
+.dropdown-menu-dark {
+    background-color: var(--darker-bg);
+    border: 1px solid var(--border-color);
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+    background-color: rgba(74, 144, 226, 0.2);
+    color: var(--primary-color);
+}
+
+/* Badge Styling */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+
+/* Pagination */
+.pagination .page-link {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.pagination .page-link:hover {
+    background-color: rgba(74, 144, 226, 0.2);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Links */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: #3a7bc8;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+}
+
+/* Small text */
+small {
+    color: var(--text-secondary);
 }
