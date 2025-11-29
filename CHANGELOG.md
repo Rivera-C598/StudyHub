@@ -2,6 +2,80 @@
 
 All notable changes to StudyHub are documented in this file.
 
+## [3.0.0] - 2024-11-29
+
+### Added
+
+#### Bulk Actions
+- **Select Multiple Resources**: Checkboxes for each resource
+- **Bulk Delete**: Delete multiple resources at once
+- **Bulk Status Change**: Change status of multiple resources
+- **Bulk Tag Addition**: Add tags to multiple resources
+- **Selection Counter**: Shows number of selected resources
+- **Dynamic Action Bar**: Appears when resources are selected
+
+#### Export Functionality
+- **CSV Export**: Spreadsheet-compatible format
+- **JSON Export**: Developer-friendly backup format
+- **PDF Export**: Print-friendly HTML format
+- **Complete Data**: Exports all resource fields including tags
+
+#### Resource Templates
+- **7 Pre-made Templates**: Quick-start for common resource types
+  - Math Problem Set
+  - Reading Assignment
+  - Lab Report
+  - Essay Outline
+  - Study Session Plan
+  - Project Plan
+  - Exam Preparation
+- **Template Customization**: Edit title and subject before creating
+- **Preview Feature**: See template structure before using
+
+#### Calendar View
+- **Monthly Calendar**: Grid view of resources by date
+- **Color Coding**: Status-based colors (todo/in_progress/done)
+- **Resource Count**: Shows number of resources per day
+- **Navigation**: Previous/Next month and Today button
+- **Current Day Highlight**: Easy to see today's date
+- **Hover Details**: See resource titles on hover
+
+#### Quick Stats Dashboard
+- **Total Resources**: Count of all resources
+- **Completed This Week**: Resources marked done in last 7 days
+- **Study Streak**: Days with completed resources (30-day window)
+- **Top Subject**: Most frequently used subject
+- **Visual Cards**: Color-coded stat cards
+- **Real-time Updates**: Calculated on page load
+
+#### Tagging System
+- **Database Support**: New `resource_tags` table
+- **Multiple Tags**: Add multiple tags per resource
+- **Bulk Tagging**: Tag multiple resources at once
+- **Tag Storage**: Persistent tag storage
+- **Ready for Filtering**: Backend complete for future tag filtering
+
+#### UI Enhancements
+- **Enhanced Navbar**: Added navigation links and export dropdown
+- **Bulk Actions Bar**: Shows when resources selected
+- **Tag Modal**: Input modal for bulk tag addition
+- **Better Spacing**: Improved layout and spacing
+- **Mobile Responsive**: All new features work on mobile
+
+### Changed
+- **Navbar**: Added Dashboard, Calendar, Templates, and Export links
+- **Dashboard Layout**: Added stats section at top
+- **Table Structure**: Added checkbox column for bulk selection
+- **Database Schema**: Added tags and streak tracking tables
+
+### Database Changes
+- Added `resource_tags` table for tagging
+- Added `user_streaks` table for streak tracking
+- Added `deadline` column to resources table
+- Added indexes for performance
+
+---
+
 ## [2.0.0] - 2024-11-29
 
 ### Added

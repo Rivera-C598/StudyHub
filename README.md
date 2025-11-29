@@ -4,13 +4,22 @@ A simple and intuitive web application for students to organize study materials,
 
 ## Features
 
+### Core Features
 - **User Authentication**: Secure registration and login with password hashing
 - **Resource Management**: Add, edit, and delete study resources (notes, links, tasks)
 - **Progress Tracking**: Track status of resources (todo → in_progress → done)
 - **Search & Filter**: Find resources by title, subject, type, or status
-- **Motivational Tips**: Get random study tips to stay motivated
 - **Pagination**: Browse through resources efficiently
 - **Responsive Design**: Works on desktop and mobile devices
+
+### New in v3.0 🎉
+- **Bulk Actions**: Select and manage multiple resources at once
+- **Export Data**: Download your resources in CSV, JSON, or PDF format
+- **Resource Templates**: 7 pre-made templates for quick resource creation
+- **Calendar View**: See your resources in a monthly calendar layout
+- **Quick Stats**: Dashboard with total resources, weekly progress, and streaks
+- **Tagging System**: Add and manage tags for better organization
+- **Motivational Tips**: Get random study tips to stay motivated
 
 ## Requirements
 

@@ -133,3 +133,86 @@ textarea.form-control {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
 }
+
+
+/* Theme Toggle */
+.theme-toggle {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Light Theme */
+body.light-theme {
+    background-color: #f5f5f5 !important;
+    color: #212529 !important;
+}
+
+body.light-theme .navbar {
+    background-color: #e9ecef !important;
+}
+
+body.light-theme .card {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: #212529 !important;
+}
+
+body.light-theme .table-dark {
+    --bs-table-bg: rgba(255, 255, 255, 0.9);
+    --bs-table-color: #212529;
+}
+
+body.light-theme .form-control,
+body.light-theme .form-select {
+    background-color: #fff;
+    border-color: #ced4da;
+    color: #212529;
+}
+
+body.light-theme .form-label {
+    color: #212529;
+}
+
+body.light-theme .text-light {
+    color: #212529 !important;
+}
+
+body.light-theme .text-muted {
+    color: #6c757d !important;
+}
+
+body.light-theme .filter-section {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+body.light-theme .modal-content {
+    background-color: #fff;
+    color: #212529;
+}
+
+body.light-theme .alert {
+    color: #212529;
+}
+
+/* Stats cards in light theme */
+body.light-theme .card.bg-primary {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+body.light-theme .card.bg-success {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+body.light-theme .card.bg-warning {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+body.light-theme .card.bg-info {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+/* Smooth theme transition */
+body, .card, .navbar, .form-control, .form-select, .modal-content {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
