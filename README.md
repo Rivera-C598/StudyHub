@@ -1,146 +1,240 @@
-# StudyHub
+# StudyHub 📚
 
-A simple and intuitive web application for students to organize study materials, track progress, and stay motivated.
+A modern, feature-rich web application for students to organize study materials, track progress, manage deadlines, and stay motivated.
 
-## Features
+![Version](https://img.shields.io/badge/version-3.1.4-blue)
+![PHP](https://img.shields.io/badge/PHP-7.4+-purple)
+![MySQL](https://img.shields.io/badge/MySQL-5.7+-orange)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-### Core Features
-- **User Authentication**: Secure registration and login with password hashing
-- **Resource Management**: Add, edit, and delete study resources (notes, links, tasks)
-- **Progress Tracking**: Track status of resources (todo → in_progress → done)
-- **Search & Filter**: Find resources by title, subject, type, or status
-- **Pagination**: Browse through resources efficiently
-- **Responsive Design**: Works on desktop and mobile devices
+---
 
-### New in v3.0 🎉
-- **Bulk Actions**: Select and manage multiple resources at once
-- **Export Data**: Download your resources in CSV, JSON, or PDF format
-- **Resource Templates**: 7 pre-made templates for quick resource creation
-- **Calendar View**: See your resources in a monthly calendar layout
-- **Quick Stats**: Dashboard with total resources, weekly progress, and streaks
-- **Tagging System**: Add and manage tags for better organization
-- **Motivational Tips**: Get random study tips to stay motivated
+## ✨ Features
 
-## Requirements
+### Core Functionality
+- **User Authentication** - Secure registration and login with Argon2id/bcrypt password hashing
+- **Resource Management** - Create, edit, and delete study resources (notes, links, tasks)
+- **Progress Tracking** - Track status: todo → in_progress → done
+- **Deadline Management** - Set and track due dates with visual urgency indicators
+- **Search & Filter** - Find resources by title, subject, type, or status
+- **Pagination** - Browse resources efficiently (10 per page)
 
-- PHP 7.4 or higher
-- MySQL 5.7 or higher
-- Web server (Apache/Nginx) or XAMPP/MAMP
-- Modern web browser
+### Advanced Features
+- **Bulk Actions** - Select and manage multiple resources at once
+  - Bulk delete
+  - Bulk status change
+  - Bulk tag addition
+- **Export Data** - Download your resources in CSV, JSON, or PDF format
+- **Resource Templates** - 6 pre-made templates for quick resource creation
+  - Math Problem Set
+  - Reading Assignment
+  - Lab Report
+  - Essay Outline
+  - Study Notes
+  - Project Plan
+- **Calendar View** - Interactive monthly calendar with deadline tracking
+  - Click dates to add resources
+  - Color-coded by status
+  - Overdue indicators
+  - Past date protection (no time travel!)
+- **Quick Stats Dashboard** - Real-time statistics
+  - Total resources
+  - Completed this week
+  - Study streak counter
+  - Top subject
+- **Motivational Tips** - Random study tips to keep you motivated
 
-## Installation
+### Security Features
+- **CSRF Protection** - All forms protected with CSRF tokens
+- **Rate Limiting** - Login attempt throttling (5 attempts per 5 minutes)
+- **Input Validation** - Comprehensive server-side validation
+- **SQL Injection Prevention** - Prepared statements throughout
+- **XSS Protection** - Output escaping with htmlspecialchars()
+- **Session Security** - Session regeneration on login
+- **Password Requirements** - Minimum 8 characters
 
-### 1. Clone or Download
+---
 
-Download the project files to your web server directory:
-- XAMPP: `C:\xampp\htdocs\studyhub`
-- MAMP: `/Applications/MAMP/htdocs/studyhub`
-- Linux: `/var/www/html/studyhub`
+## 🚀 Quick Start
 
-### 2. Database Setup
+See [SETUP.md](SETUP.md) for detailed installation instructions.
 
-#### Windows (XAMPP):
-```cmd
-cd database
-migrate.bat
-```
-
-#### Mac/Linux:
+**TL;DR:**
 ```bash
+# 1. Clone/download to web server directory
+# 2. Run database migration
 cd database
-chmod +x migrate.sh
-./migrate.sh
+./migrate.sh  # or migrate.bat on Windows
+
+# 3. Configure database (if needed)
+# Edit config/config.php
+
+# 4. Start server
+# XAMPP/MAMP: Start Apache & MySQL
+# Or: php -S localhost:8000 -t public
+
+# 5. Open browser
+http://localhost/studyhub
 ```
 
-The script will prompt for your MySQL credentials and create the database.
+---
 
-### 3. Configuration
+## 📖 Usage Guide
 
-Edit `config/config.php` if your database credentials differ:
+### Getting Started
 
-```php
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'studyhub_db');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-```
+1. **Register an Account**
+   - Click "Register" on the login page
+   - Enter username, email, and password (min 8 characters)
+   - Login with your credentials
 
-### 4. Start the Server
-
-#### Using XAMPP/MAMP:
-1. Start Apache and MySQL
-2. Navigate to `http://localhost/studyhub`
-
-#### Using PHP Built-in Server:
-```bash
-php -S localhost:8000 -t public
-```
-Then visit `http://localhost:8000`
-
-## Usage
-
-### First Time Setup
-
-1. Navigate to the application in your browser
-2. Click "Register" to create an account
-3. Fill in username, email, and password (minimum 8 characters)
-4. Login with your credentials
+2. **Add Your First Resource**
+   - Fill in the form on the left side of the dashboard
+   - Enter title, subject, and type (note/link/task)
+   - Optionally add URL, notes, and deadline
+   - Click "Save"
 
 ### Managing Resources
 
-**Add a Resource:**
-1. Fill in the form on the left side of the dashboard
-2. Enter title, subject, type (note/link/task)
-3. Optionally add a URL and notes
-4. Click "Save"
-
 **Edit a Resource:**
-1. Click "Edit" button on any resource
-2. Modify the fields
-3. Click "Update"
+- Click "Edit" button on any resource
+- Modify fields as needed
+- Click "Update"
 
 **Toggle Status:**
-1. Click "Toggle" button to cycle through: todo → in_progress → done
+- Click "Toggle" button to cycle through statuses
+- todo → in_progress → done → todo
 
 **Delete a Resource:**
-1. Click "Delete" button
-2. Confirm the deletion
+- Click "Delete" button
+- Confirm deletion
+
+**Bulk Actions:**
+1. Select multiple resources using checkboxes
+2. Choose action from bulk actions bar:
+   - Mark Done / In Progress / Todo
+   - Delete Selected
+
+### Using the Calendar
+
+**View Deadlines:**
+- Navigate to Calendar view from navbar
+- See all resources with deadlines
+- Color-coded by status (todo/in_progress/done)
+- Overdue items highlighted in red
+
+**Add Resource from Calendar:**
+1. Click on any date (today or future)
+2. Fill in quick-add form
+3. Resource created with that deadline
+4. Note: Past dates are locked (no time travel!)
+
+**Navigate Months:**
+- Use Previous/Next buttons at bottom
+- Click "Today" to return to current month
 
 ### Search and Filter
 
-- Use the search box to find resources by title or subject
-- Filter by type (note/link/task)
-- Filter by status (todo/in_progress/done)
-- Filters work together for precise results
+**Search:**
+- Type in search box to find resources by title or subject
+- Real-time filtering as you type
 
-## Security Features
+**Filter:**
+- Filter by Type: note, link, or task
+- Filter by Status: todo, in_progress, or done
+- Combine filters for precise results
 
-- **CSRF Protection**: All forms include CSRF tokens
-- **Password Hashing**: Argon2id or bcrypt
-- **SQL Injection Prevention**: Prepared statements
-- **XSS Protection**: Output escaping
-- **Rate Limiting**: Login attempt throttling
-- **Session Security**: Session regeneration on login
+### Export Your Data
 
-## Project Structure
+1. Click "Export" dropdown in dashboard
+2. Choose format:
+   - **CSV** - For spreadsheets (Excel, Google Sheets)
+   - **JSON** - For backup or data migration
+   - **PDF** - For printing (opens in new tab)
+
+### Using Templates
+
+1. Click "Templates" dropdown when adding a resource
+2. Select a template
+3. Customize title and subject
+4. Template structure is pre-filled in notes
+5. Click "Save"
+
+---
+
+## 🎨 User Interface
+
+### Dashboard
+- **Left Panel** - Add/Edit resource form with templates
+- **Right Panel** - Resource list with search, filter, and bulk actions
+- **Top Stats** - Quick overview of your progress
+- **Study Tip Card** - Daily motivation
+
+### Calendar
+- **Monthly Grid** - All dates with resources
+- **Color Coding** - Visual status indicators
+- **Interactive** - Click to add resources
+- **Navigation** - Easy month switching at bottom
+
+### Responsive Design
+- Works on desktop, tablet, and mobile
+- Touch-friendly interface
+- Adaptive layouts
+
+---
+
+## 🔒 Security
+
+StudyHub implements industry-standard security practices:
+
+### Authentication
+- Passwords hashed with Argon2id (or bcrypt fallback)
+- Session-based authentication
+- Session regeneration on login
+- Secure session configuration
+
+### Input Protection
+- All user input validated server-side
+- Prepared statements prevent SQL injection
+- Output escaped to prevent XSS
+- CSRF tokens on all forms
+
+### Rate Limiting
+- Login attempts limited to 5 per 5 minutes
+- Prevents brute force attacks
+- Session-based tracking
+
+### Error Handling
+- Generic error messages to users
+- Detailed errors logged server-side
+- No information disclosure
+
+---
+
+## 🗂️ Project Structure
 
 ```
 studyhub/
-├── api/                    # API endpoints
+├── api/                    # REST API endpoints
+│   ├── bulk_actions.php    # Bulk operations
 │   ├── motivation.php      # Random study tips
-│   └── toggle_status.php   # Toggle resource status
+│   ├── search_resources.php # Server-side search
+│   └── toggle_status.php   # Status toggling
 ├── assets/                 # Frontend assets
 │   ├── css/
 │   │   └── style.css       # Custom styles
 │   └── js/
 │       └── main.js         # JavaScript functionality
-├── config/                 # Configuration files
+├── config/                 # Configuration
 │   ├── config.php          # Database credentials
 │   └── db.php              # Database connection
-├── database/               # Database scripts
+├── database/               # Database files
 │   ├── schema.sql          # Database schema
-│   ├── migrate.bat         # Windows migration script
-│   └── migrate.sh          # Mac/Linux migration script
+│   ├── migrate.sh          # Linux/Mac migration
+│   ├── migrate.bat         # Windows migration
+│   ├── migrate_v3.1.sql    # v3.1 migration
+│   ├── migrate_v3.1.sh     # v3.1 Linux/Mac
+│   └── migrate_v3.1.bat    # v3.1 Windows
 ├── includes/               # Shared PHP files
 │   ├── auth.php            # Authentication functions
 │   ├── footer.php          # Footer template
@@ -148,17 +242,88 @@ studyhub/
 │   ├── navbar.php          # Navigation bar
 │   └── security.php        # Security functions
 ├── public/                 # Public pages
+│   ├── calendar.php        # Calendar view
 │   ├── dashboard.php       # Main dashboard
 │   ├── delete_resource.php # Delete handler
+│   ├── export.php          # Export functionality
 │   ├── index.php           # Entry point
 │   ├── login.php           # Login page
 │   ├── logout.php          # Logout handler
-│   └── register.php        # Registration page
+│   ├── register.php        # Registration page
+│   └── templates.php       # Resource templates
 ├── index.php               # Root redirect
-└── README.md               # This file
+├── README.md               # This file
+└── SETUP.md                # Installation guide
 ```
 
-## Troubleshooting
+---
+
+## 🛠️ Technology Stack
+
+### Backend
+- **PHP 7.4+** - Server-side logic
+- **MySQL 5.7+** - Database
+- **PDO** - Database abstraction
+
+### Frontend
+- **HTML5** - Structure
+- **CSS3** - Styling with custom variables
+- **JavaScript (ES6+)** - Interactivity
+- **Bootstrap 5.3.3** - UI framework
+
+### Security
+- **Argon2id/bcrypt** - Password hashing
+- **CSRF Tokens** - Form protection
+- **Prepared Statements** - SQL injection prevention
+- **htmlspecialchars()** - XSS prevention
+
+---
+
+## 📊 Database Schema
+
+### Users Table
+```sql
+- id (INT, PRIMARY KEY)
+- username (VARCHAR, UNIQUE)
+- email (VARCHAR, UNIQUE)
+- password_hash (VARCHAR)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+```
+
+### Resources Table
+```sql
+- id (INT, PRIMARY KEY)
+- user_id (INT, FOREIGN KEY)
+- title (VARCHAR)
+- subject (VARCHAR)
+- resource_type (ENUM: note, link, task)
+- url (TEXT, nullable)
+- notes (TEXT, nullable)
+- status (ENUM: todo, in_progress, done)
+- deadline (DATE, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+```
+
+### Resource Tags Table
+```sql
+- id (INT, PRIMARY KEY)
+- resource_id (INT, FOREIGN KEY)
+- tag (VARCHAR)
+- created_at (TIMESTAMP)
+```
+
+---
+
+## ⌨️ Keyboard Shortcuts
+
+- **/** (forward slash) - Focus on search box (like GitHub, Reddit)
+- **Esc** - Clear search and unfocus
+
+---
+
+## 🐛 Troubleshooting
 
 ### Database Connection Error
 - Verify MySQL is running
@@ -179,17 +344,125 @@ studyhub/
 - Ensure web server has read access to files
 - Check file permissions: `chmod 755` for directories, `chmod 644` for files
 
-## Browser Support
+### Toggle Button Not Working
+- Clear browser cache (Ctrl+F5)
+- Check browser console for JavaScript errors
+- Verify main.js is loading
 
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers
+### Calendar Not Showing Resources
+- Check that resources have deadlines set
+- Verify date format is YYYY-MM-DD
+- Check browser console for errors
 
-## License
+---
+
+## 🔄 Version History
+
+### v3.1.4 (Current)
+- Improved calendar navigation (moved to bottom)
+- Enhanced legend with more indicators
+- Better button styling with icons
+
+### v3.1.3
+- Added past date protection (no time travel)
+- Visual indicators for past dates
+- Friendly error messages
+
+### v3.1.2
+- Fixed POST-Refresh-Duplicate bug
+- Implemented Post-Redirect-Get pattern
+- Better form submission handling
+
+### v3.1.1
+- Fixed toggle button column selector
+- Added calendar interactivity
+- Quick-add modal for dates
+
+### v3.1.0
+- Consolidated JavaScript bulk actions
+- Added missing database tables
+- Fixed template loading
+- Server-side search API
+- Performance indexes
+- Removed duplicate stats calculations
+
+### v3.0.0
+- Bulk actions
+- Export functionality
+- Resource templates
+- Calendar view
+- Quick stats dashboard
+- Deadline system
+- Tagging system
+
+### v2.0.0
+- Edit resources
+- Search & filter
+- Pagination
+- CSRF protection
+- Rate limiting
+- Enhanced security
+
+### v1.0.0
+- Initial release
+- Basic CRUD operations
+- User authentication
+- Status tracking
+
+---
+
+## 🤝 Contributing
+
+This is an educational project. Feel free to:
+- Fork and modify for your needs
+- Report bugs or suggest features
+- Improve documentation
+- Add new features
+
+---
+
+## 📄 License
 
 This project is open source and available for educational purposes.
 
-## Support
+---
 
-For issues or questions, please check the documentation in the `docs/` folder.
+## 🙏 Acknowledgments
+
+Built with:
+- PHP
+- MySQL
+- Bootstrap 5
+- Vanilla JavaScript
+- Love for learning ❤️
+
+---
+
+## 📞 Support
+
+For issues or questions:
+1. Check the [SETUP.md](SETUP.md) guide
+2. Review the troubleshooting section above
+3. Check browser console for errors
+4. Verify database connection
+
+---
+
+## 🎯 Future Enhancements
+
+Potential features for future versions:
+- Email notifications for deadlines
+- File attachments
+- Rich text editor for notes
+- Collaborative study groups
+- Statistics and analytics
+- Mobile app
+- Dark/Light theme toggle
+- Import from other apps
+- API for third-party integrations
+
+---
+
+**Made with 💙 for students everywhere**
+
+*Study smart, not hard!* 📚✨

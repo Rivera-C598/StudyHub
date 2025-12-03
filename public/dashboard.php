@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['edit_id'])) {
         $type    = $_POST['resource_type'] ?? 'note';
         $url     = trim($_POST['url'] ?? '');
         $notes   = trim($_POST['notes'] ?? '');
+        $deadline = trim($_POST['deadline'] ?? '');
 
         if ($title === '' || $subject === '') {
             $errors[] = "Title and subject are required.";
@@ -30,18 +31,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['edit_id'])) {
         } else {
             try {
                 $stmt = $pdo->prepare(
-                    "INSERT INTO resources (user_id, title, subject, resource_type, url, notes)
-                     VALUES (:uid, :t, :s, :rt, :url, :notes)"
+                    "INSERT INTO resources (user_id, title, subject, resource_type, url, notes, deadline)
+                     VALUES (:uid, :t, :s, :rt, :url, :notes, :deadline)"
                 );
                 $stmt->execute([
-                    ':uid'  => $userId,
-                    ':t'    => $title,
-                    ':s'    => $subject,
-                    ':rt'   => $type,
-                    ':url'  => $url !== '' ? $url : null,
-                    ':notes'=> $notes
+                    ':uid'     => $userId,
+                    ':t'       => $title,
+                    ':s'       => $subject,
+                    ':rt'      => $type,
+                    ':url'     => $url !== '' ? $url : null,
+                    ':notes'   => $notes,
+                    ':deadline'=> $deadline !== '' ? $deadline : null
                 ]);
-                $success = "Resource added!";
+                $_SESSION['success'] = "Resource added!";
+                header('Location: dashboard.php');
+                exit;
             } catch (PDOException $e) {
                 $errors[] = "Failed to add resource. Please try again.";
                 error_log("Add resource error: " . $e->getMessage());
@@ -61,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id'])) {
         $type    = $_POST['resource_type'] ?? 'note';
         $url     = trim($_POST['url'] ?? '');
         $notes   = trim($_POST['notes'] ?? '');
+        $deadline = trim($_POST['deadline'] ?? '');
 
         if ($title === '' || $subject === '') {
             $errors[] = "Title and subject are required.";
@@ -70,18 +75,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id'])) {
             try {
                 $stmt = $pdo->prepare(
                     "UPDATE resources SET title = :t, subject = :s, resource_type = :rt, 
-                     url = :url, notes = :notes WHERE id = :id AND user_id = :uid"
+                     url = :url, notes = :notes, deadline = :deadline WHERE id = :id AND user_id = :uid"
                 );
                 $stmt->execute([
-                    ':t'    => $title,
-                    ':s'    => $subject,
-                    ':rt'   => $type,
-                    ':url'  => $url !== '' ? $url : null,
-                    ':notes'=> $notes,
-                    ':id'   => $editId,
-                    ':uid'  => $userId
+                    ':t'       => $title,
+                    ':s'       => $subject,
+                    ':rt'      => $type,
+                    ':url'     => $url !== '' ? $url : null,
+                    ':notes'   => $notes,
+                    ':deadline'=> $deadline !== '' ? $deadline : null,
+                    ':id'      => $editId,
+                    ':uid'     => $userId
                 ]);
-                $success = "Resource updated!";
+                $_SESSION['success'] = "Resource updated!";
+                header('Location: dashboard.php');
+                exit;
             } catch (PDOException $e) {
                 $errors[] = "Failed to update resource. Please try again.";
                 error_log("Update resource error: " . $e->getMessage());
@@ -109,42 +117,6 @@ if (isset($_SESSION['error'])) {
     unset($_SESSION['error']);
 }
 
-// Calculate stats
-$statsStmt = $pdo->prepare("
-    SELECT 
-        COUNT(*) as total,
-        SUM(CASE WHEN status = 'done' THEN 1 ELSE 0 END) as completed,
-        SUM(CASE WHEN status = 'in_progress' THEN 1 ELSE 0 END) as in_progress,
-        SUM(CASE WHEN DATE(updated_at) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND status = 'done' THEN 1 ELSE 0 END) as completed_this_week
-    FROM resources WHERE user_id = ?
-");
-$statsStmt->execute([$userId]);
-$stats = $statsStmt->fetch();
-
-// Most studied subject
-$subjectStmt = $pdo->prepare("
-    SELECT subject, COUNT(*) as count 
-    FROM resources 
-    WHERE user_id = ? 
-    GROUP BY subject 
-    ORDER BY count DESC 
-    LIMIT 1
-");
-$subjectStmt->execute([$userId]);
-$topSubject = $subjectStmt->fetch();
-
-// Calculate streak
-$streakStmt = $pdo->prepare("
-    SELECT COUNT(DISTINCT DATE(updated_at)) as streak
-    FROM resources
-    WHERE user_id = ? 
-    AND status = 'done'
-    AND DATE(updated_at) >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-");
-$streakStmt->execute([$userId]);
-$streakData = $streakStmt->fetch();
-$streak = $streakData['streak'] ?? 0;
-
 // Pagination
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $perPage = 10;
@@ -166,29 +138,19 @@ $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $resources = $stmt->fetchAll();
 
-// Calculate quick stats
+// Calculate comprehensive stats (consolidated)
 $statsStmt = $pdo->prepare("
     SELECT 
         COUNT(*) as total,
         SUM(CASE WHEN status = 'done' THEN 1 ELSE 0 END) as completed,
         SUM(CASE WHEN status = 'in_progress' THEN 1 ELSE 0 END) as in_progress,
-        SUM(CASE WHEN status = 'todo' THEN 1 ELSE 0 END) as todo
+        SUM(CASE WHEN status = 'todo' THEN 1 ELSE 0 END) as todo,
+        SUM(CASE WHEN status = 'done' AND updated_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) as completed_this_week
     FROM resources 
     WHERE user_id = :uid
 ");
 $statsStmt->execute([':uid' => $userId]);
 $stats = $statsStmt->fetch();
-
-// Completed this week
-$weekStmt = $pdo->prepare("
-    SELECT COUNT(*) as completed_this_week
-    FROM resources 
-    WHERE user_id = :uid 
-    AND status = 'done' 
-    AND updated_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-");
-$weekStmt->execute([':uid' => $userId]);
-$weekStats = $weekStmt->fetch();
 
 // Most studied subject
 $subjectStmt = $pdo->prepare("
@@ -201,14 +163,15 @@ $subjectStmt = $pdo->prepare("
 ");
 $subjectStmt->execute([':uid' => $userId]);
 $topSubject = $subjectStmt->fetch();
+$stats['top_subject'] = $topSubject['subject'] ?? 'None';
 
 // Calculate streak (consecutive days with activity)
 $streakStmt = $pdo->prepare("
-    SELECT DATE(created_at) as activity_date
+    SELECT DISTINCT DATE(created_at) as activity_date
     FROM resources 
     WHERE user_id = :uid
     UNION
-    SELECT DATE(updated_at) as activity_date
+    SELECT DISTINCT DATE(updated_at) as activity_date
     FROM resources 
     WHERE user_id = :uid AND status = 'done'
     ORDER BY activity_date DESC
@@ -231,10 +194,30 @@ foreach ($activityDates as $dateStr) {
         break;
     }
 }
-
-$stats['completed_this_week'] = $weekStats['completed_this_week'];
-$stats['top_subject'] = $topSubject['subject'] ?? 'None';
 $stats['streak'] = $streak;
+
+// Get upcoming deadlines
+$upcomingStmt = $pdo->prepare("
+    SELECT * FROM resources 
+    WHERE user_id = ? 
+    AND deadline IS NOT NULL 
+    AND deadline >= CURDATE()
+    AND status != 'done'
+    ORDER BY deadline ASC 
+    LIMIT 5
+");
+$upcomingStmt->execute([$userId]);
+$upcomingDeadlines = $upcomingStmt->fetchAll();
+
+// Get overdue items
+$overdueStmt = $pdo->prepare("
+    SELECT COUNT(*) as count FROM resources 
+    WHERE user_id = ? 
+    AND deadline < CURDATE()
+    AND status != 'done'
+");
+$overdueStmt->execute([$userId]);
+$overdueCount = $overdueStmt->fetchColumn();
 ?>
 <script defer src="../assets/js/main.js"></script>
 
@@ -266,6 +249,56 @@ $stats['streak'] = $streak;
             </div>
         </div>
     </div>
+
+    <!-- Upcoming Deadlines Widget -->
+    <?php if (!empty($upcomingDeadlines) || $overdueCount > 0): ?>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="deadline-widget">
+                <div class="deadline-header">
+                    <h5 class="mb-0">📅 Upcoming Deadlines</h5>
+                    <a href="calendar.php" class="btn btn-sm btn-outline-light">View Calendar</a>
+                </div>
+                <div class="deadline-body">
+                    <?php if ($overdueCount > 0): ?>
+                        <div class="alert alert-danger mb-3">
+                            <strong>⚠️ <?= $overdueCount ?> overdue item<?= $overdueCount > 1 ? 's' : '' ?></strong>
+                            <a href="calendar.php" class="alert-link ms-2">View all</a>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($upcomingDeadlines)): ?>
+                        <div class="deadline-list">
+                            <?php foreach ($upcomingDeadlines as $item): 
+                                $daysUntil = (strtotime($item['deadline']) - strtotime(date('Y-m-d'))) / 86400;
+                                $urgencyClass = $daysUntil <= 1 ? 'danger' : ($daysUntil <= 7 ? 'warning' : 'info');
+                            ?>
+                                <div class="deadline-item">
+                                    <div class="deadline-item-content">
+                                        <strong><?= htmlspecialchars($item['title']) ?></strong>
+                                        <small class="text-muted d-block"><?= htmlspecialchars($item['subject']) ?></small>
+                                    </div>
+                                    <div class="deadline-item-date">
+                                        <span class="badge bg-<?= $urgencyClass ?>">
+                                            <?php if ($daysUntil == 0): ?>
+                                                Today
+                                            <?php elseif ($daysUntil == 1): ?>
+                                                Tomorrow
+                                            <?php else: ?>
+                                                <?= (int)$daysUntil ?> days
+                                            <?php endif; ?>
+                                        </span>
+                                        <small class="text-muted d-block"><?= date('M j', strtotime($item['deadline'])) ?></small>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <div class="row g-4">
         <!-- Left: add/edit resource -->
@@ -338,6 +371,13 @@ $stats['streak'] = $streak;
                     <label class="form-label">Notes / Description</label>
                     <textarea name="notes" rows="3" class="form-control"><?= htmlspecialchars($editResource['notes'] ?? '') ?></textarea>
                 </div>
+                <div class="mb-2">
+                    <label class="form-label">Deadline (Optional)</label>
+                    <input type="date" name="deadline" class="form-control" 
+                           value="<?= htmlspecialchars($editResource['deadline'] ?? '') ?>"
+                           min="<?= date('Y-m-d') ?>">
+                    <small class="text-muted">Set a due date for this resource</small>
+                </div>
                 <button class="btn btn-primary w-100" type="submit">
                     <?= $editResource ? 'Update' : 'Save' ?>
                 </button>
@@ -346,10 +386,23 @@ $stats['streak'] = $streak;
                 <?php endif; ?>
             </form>
 
-            <div class="card mt-4 bg-secondary bg-opacity-50 p-3">
-                <h6>Study Tip</h6>
-                <p id="study-tip-text" class="mb-1">Loading tip...</p>
-                <button class="btn btn-sm btn-outline-light" id="refresh-tip-btn">New Tip</button>
+            <!-- Study Tip Card -->
+            <div class="study-tip-card mt-4">
+                <div class="study-tip-header">
+                    <h6 class="mb-0">💡 Daily Study Tip</h6>
+                    <button class="btn btn-sm btn-light" id="refresh-tip-btn" title="Get new tip">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                            <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="study-tip-content">
+                    <p id="study-tip-text" class="mb-0">Loading tip...</p>
+                </div>
+                <div class="study-tip-footer">
+                    <small class="text-muted">Tip of the day</small>
+                </div>
             </div>
         </div>
 
@@ -419,6 +472,7 @@ $stats['streak'] = $streak;
                         <th>Title</th>
                         <th>Subject</th>
                         <th>Type</th>
+                        <th>Deadline</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -445,6 +499,34 @@ $stats['streak'] = $streak;
                             </td>
                             <td><?= htmlspecialchars($res['subject']) ?></td>
                             <td><?= htmlspecialchars($res['resource_type']) ?></td>
+                            <td>
+                                <?php if ($res['deadline']): 
+                                    $deadline = strtotime($res['deadline']);
+                                    $today = strtotime(date('Y-m-d'));
+                                    $daysUntil = ($deadline - $today) / 86400;
+                                    
+                                    if ($daysUntil < 0 && $res['status'] !== 'done') {
+                                        $badgeClass = 'danger';
+                                        $text = 'Overdue';
+                                    } elseif ($daysUntil == 0) {
+                                        $badgeClass = 'danger';
+                                        $text = 'Today';
+                                    } elseif ($daysUntil == 1) {
+                                        $badgeClass = 'warning';
+                                        $text = 'Tomorrow';
+                                    } elseif ($daysUntil <= 7) {
+                                        $badgeClass = 'warning';
+                                        $text = (int)$daysUntil . ' days';
+                                    } else {
+                                        $badgeClass = 'info';
+                                        $text = date('M j', $deadline);
+                                    }
+                                ?>
+                                    <span class="badge bg-<?= $badgeClass ?>"><?= $text ?></span>
+                                <?php else: ?>
+                                    <span class="text-muted">-</span>
+                                <?php endif; ?>
+                            </td>
                             <td>
                                 <span class="badge bg-<?=
                                     $res['status'] === 'done' ? 'success' :
@@ -535,9 +617,7 @@ $stats['streak'] = $streak;
     </button>
     <div class="collapse mt-2" id="shortcutsHelp">
         <div class="card bg-dark text-light border-secondary p-2" style="font-size: 0.85rem;">
-            <div><kbd>Ctrl+N</kbd> New resource</div>
-            <div><kbd>Ctrl+F</kbd> Search</div>
-            <div><kbd>Ctrl+S</kbd> Save form</div>
+            <div><kbd>/</kbd> Focus search</div>
             <div><kbd>Esc</kbd> Clear search</div>
         </div>
     </div>

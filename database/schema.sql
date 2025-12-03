@@ -27,11 +27,27 @@ CREATE TABLE IF NOT EXISTS resources (
     url TEXT,
     notes TEXT,
     status ENUM('todo', 'in_progress', 'done') NOT NULL DEFAULT 'todo',
+    deadline DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX idx_user_id (user_id),
     INDEX idx_status (status),
     INDEX idx_resource_type (resource_type),
-    INDEX idx_created_at (created_at)
+    INDEX idx_created_at (created_at),
+    INDEX idx_deadline (deadline),
+    INDEX idx_user_status (user_id, status),
+    INDEX idx_user_deadline (user_id, deadline)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Resource tags table
+CREATE TABLE IF NOT EXISTS resource_tags (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    resource_id INT NOT NULL,
+    tag VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_resource_tag (resource_id, tag),
+    INDEX idx_resource_id (resource_id),
+    INDEX idx_tag (tag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

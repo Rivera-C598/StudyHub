@@ -7,50 +7,61 @@ require_once __DIR__ . '/../includes/security.php';
 require_once __DIR__ . '/../config/db.php';
 requireLogin();
 
-$templates = [
-    'math_problem' => [
-        'title' => 'Math Problem Set',
-        'subject' => 'Mathematics',
-        'type' => 'task',
-        'notes' => "Problem Set #__\n\nProblems to solve:\n1. \n2. \n3. \n\nDue date: \nDifficulty: \nChapter: "
-    ],
-    'reading' => [
-        'title' => 'Reading Assignment',
-        'subject' => 'Literature',
-        'type' => 'task',
-        'notes' => "Reading: [Book/Article Title]\n\nPages: \nAuthor: \nKey themes:\n- \n- \n\nQuestions to consider:\n1. \n2. "
-    ],
-    'lab_report' => [
-        'title' => 'Lab Report',
-        'subject' => 'Science',
-        'type' => 'task',
-        'notes' => "Lab Report: [Title]\n\nObjective:\n\nMaterials:\n-\n-\n\nProcedure:\n1.\n2.\n\nResults:\n\nConclusion:\n\nDue date: "
-    ],
-    'essay' => [
-        'title' => 'Essay Outline',
-        'subject' => 'Writing',
-        'type' => 'task',
-        'notes' => "Essay: [Title]\n\nThesis:\n\nI. Introduction\n   - Hook:\n   - Background:\n   - Thesis:\n\nII. Body Paragraph 1\n   - Topic:\n   - Evidence:\n\nIII. Body Paragraph 2\n   - Topic:\n   - Evidence:\n\nIV. Conclusion\n   - Summary:\n   - Final thought:\n\nDue date:\nWord count: "
-    ],
-    'study_session' => [
-        'title' => 'Study Session Plan',
-        'subject' => 'General',
-        'type' => 'task',
-        'notes' => "Study Session: [Date]\n\nTopics to cover:\n1. \n2. \n3. \n\nGoals:\n- \n- \n\nMaterials needed:\n- \n- \n\nTime allocation:\n- Topic 1: __ minutes\n- Topic 2: __ minutes\n- Break: __ minutes"
-    ],
-    'project' => [
-        'title' => 'Project Plan',
-        'subject' => 'General',
-        'type' => 'task',
-        'notes' => "Project: [Title]\n\nObjective:\n\nMilestones:\n1. [Date] - \n2. [Date] - \n3. [Date] - \n\nResources needed:\n- \n- \n\nTeam members:\n- \n\nDeadline: "
-    ],
-    'exam_prep' => [
-        'title' => 'Exam Preparation',
-        'subject' => 'General',
-        'type' => 'task',
-        'notes' => "Exam: [Subject]\nDate: \n\nTopics to review:\n1. \n2. \n3. \n\nPractice problems:\n- \n- \n\nStudy materials:\n- Textbook chapters: \n- Notes: \n- Practice tests: \n\nStudy schedule:\n- Week 1: \n- Week 2: "
-    ]
-];
+// Handle AJAX request for template data
+if (isset($_GET['ajax']) && isset($_GET['template'])) {
+    header('Content-Type: application/json');
+    $templateKey = $_GET['template'];
+    $templates = getTemplates();
+    
+    if (isset($templates[$templateKey])) {
+        echo json_encode($templates[$templateKey]);
+    } else {
+        http_response_code(404);
+        echo json_encode(['error' => 'Template not found']);
+    }
+    exit;
+}
+
+function getTemplates() {
+    return [
+        'math_problem_set' => [
+            'title' => 'Math Problem Set',
+            'subject' => 'Mathematics',
+            'resource_type' => 'task',
+            'notes' => "Problem Set #__\n\nProblems to solve:\n1. \n2. \n3. \n\nDue date: \nDifficulty: \nChapter: "
+        ],
+        'reading_assignment' => [
+            'title' => 'Reading Assignment',
+            'subject' => 'Literature',
+            'resource_type' => 'task',
+            'notes' => "Reading: [Book/Article Title]\n\nPages: \nAuthor: \nKey themes:\n- \n- \n\nQuestions to consider:\n1. \n2. "
+        ],
+        'lab_report' => [
+            'title' => 'Lab Report',
+            'subject' => 'Science',
+            'resource_type' => 'task',
+            'notes' => "Lab Report: [Title]\n\nObjective:\n\nMaterials:\n-\n-\n\nProcedure:\n1.\n2.\n\nResults:\n\nConclusion:\n\nDue date: "
+        ],
+        'essay_outline' => [
+            'title' => 'Essay Outline',
+            'subject' => 'Writing',
+            'resource_type' => 'task',
+            'notes' => "Essay: [Title]\n\nThesis:\n\nI. Introduction\n   - Hook:\n   - Background:\n   - Thesis:\n\nII. Body Paragraph 1\n   - Topic:\n   - Evidence:\n\nIII. Body Paragraph 2\n   - Topic:\n   - Evidence:\n\nIV. Conclusion\n   - Summary:\n   - Final thought:\n\nDue date:\nWord count: "
+        ],
+        'study_notes' => [
+            'title' => 'Study Notes',
+            'subject' => 'General',
+            'resource_type' => 'note',
+            'notes' => "Topic: [Subject]\n\nKey Concepts:\n1. \n2. \n3. \n\nImportant Definitions:\n- \n- \n\nExamples:\n- \n- \n\nQuestions:\n- "
+        ],
+        'project_plan' => [
+            'title' => 'Project Plan',
+            'subject' => 'General',
+            'resource_type' => 'task',
+            'notes' => "Project: [Title]\n\nObjective:\n\nMilestones:\n1. [Date] - \n2. [Date] - \n3. [Date] - \n\nResources needed:\n- \n- \n\nTeam members:\n- \n\nDeadline: "
+        ]
+    ];
+}
 
 // Handle template selection
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['template'])) {
@@ -58,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['template'])) {
         $error = "Invalid security token.";
     } else {
         $templateKey = $_POST['template'];
+        $templates = getTemplates();
         if (isset($templates[$templateKey])) {
             $template = $templates[$templateKey];
             
@@ -75,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['template'])) {
                     $_SESSION['user_id'],
                     $title,
                     $subject,
-                    $template['type'],
+                    $template['resource_type'],
                     $template['notes']
                 ]);
                 
@@ -100,14 +112,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['template'])) {
     <?php endif; ?>
     
     <div class="row g-4">
-        <?php foreach ($templates as $key => $template): ?>
+        <?php 
+        $templates = getTemplates();
+        foreach ($templates as $key => $template): ?>
         <div class="col-md-6 col-lg-4">
             <div class="card h-100">
                 <div class="card-body">
                     <h5 class="card-title"><?= htmlspecialchars($template['title']) ?></h5>
                     <p class="card-text">
                         <span class="badge bg-primary"><?= htmlspecialchars($template['subject']) ?></span>
-                        <span class="badge bg-secondary"><?= htmlspecialchars($template['type']) ?></span>
+                        <span class="badge bg-secondary"><?= htmlspecialchars($template['resource_type']) ?></span>
                     </p>
                     <button class="btn btn-outline-primary w-100" 
                             onclick="showTemplateModal('<?= $key ?>', <?= htmlspecialchars(json_encode($template)) ?>)">
