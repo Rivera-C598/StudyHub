@@ -10,6 +10,8 @@ if (!isset($pageTitle)) {
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($pageTitle) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
     <!-- Bootstrap CSS -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
