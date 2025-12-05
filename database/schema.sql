@@ -1,9 +1,6 @@
 -- StudyHub Database Schema
--- This script creates the database and tables for StudyHub
+-- This script creates the database and tables for StudyHub;
 
-CREATE DATABASE IF NOT EXISTS studyhub_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-USE studyhub_db;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (

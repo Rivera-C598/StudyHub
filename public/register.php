@@ -1,4 +1,6 @@
 <?php
+$pageTitle = 'StudyHub - Register';
+include __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../includes/security.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../includes/auth.php';
@@ -92,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" name="confirm_password" class="form-control" required>
                 </div>
                 <button class="btn btn-primary w-100" type="submit">Register</button>
-                <p class="mt-3 text-center">
+                <p class="mt-3 text-center text-light">
                     Already have an account?
                     <a href="login.php">Log in</a>
                 </p>
@@ -100,5 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </div>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>

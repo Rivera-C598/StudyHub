@@ -1,0 +1,12 @@
+<?php
+// config/config.production.php.example
+// 
+// INSTRUCTIONS:
+// 1. Copy this file and rename it to: config.production.php
+// 2. Fill in your InfinityFree database credentials below
+// 3. DO NOT commit config.production.php to Git (it contains sensitive info)
+
+define('DB_HOST', 'sql123.infinityfreeapp.com');  // Replace with your InfinityFree MySQL hostname
+define('DB_NAME', 'epiz_12345678_studyhub');       // Replace with your InfinityFree database name
+define('DB_USER', 'epiz_12345678');                // Replace with your InfinityFree database username
+define('DB_PASS', 'your_password_here');           // Replace with your InfinityFree database password

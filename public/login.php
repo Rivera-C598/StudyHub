@@ -80,7 +80,7 @@ $registered = isset($_GET['registered']);
                     <input type="password" name="password" class="form-control" required>
                 </div>
                 <button class="btn btn-primary w-100" type="submit">Login</button>
-                <p class="mt-3 text-center">
+                <p class="mt-3 text-center text-light">
                     No account yet?
                     <a href="register.php">Register</a>
                 </p>

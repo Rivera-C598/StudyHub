@@ -1,0 +1,6 @@
+# Add production config to gitignore to protect credentials
+config/config.production.php
+
+# Ignore database exports (may contain user data)
+database/full_export.sql
+database/*.backup.sql
